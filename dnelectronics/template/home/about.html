@@ -3,6 +3,9 @@
 {% block title %}About Us{% endblock %}
 
 {% block content %}
+{% load static %}
+<link rel="shortcut icon" href="{% static 'logo.jpg' %}" type="image/jpeg">
+
 <style>
 .about-root { --primary: #1e293b; --secondary: #64748b; --accent: #2563eb; --light: #f1f5f9; }
 .about-main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
