@@ -20,4 +20,7 @@ urlpatterns = [
 
     path('orders/', views.order_list, name='order_list'),
 
+    path('api/products/', views.product_list_api),
+
+
 ]
