@@ -45,8 +45,10 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+from django.shortcuts import redirect
+
 def home_view(request):
-    return render(request, 'home/home1.html')
+    return redirect('dashboard')
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -112,3 +114,19 @@ def about_us(request):
 
 def contact_us(request):
     return render(request, 'home/contact.html')
+
+
+
+# For Rest API ----------------------------------------------
+
+
+
+# views.py
+
+from django.shortcuts import render
+
+def privacy_policy(request):
+    return render(request, 'privacy.html')
+
+def terms_conditions(request):
+    return render(request, 'terms.html')

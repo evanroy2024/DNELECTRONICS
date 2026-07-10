@@ -44,17 +44,17 @@
                 
                 <div style="margin: 20px 0; padding: 15px 0; border-top: 1px solid #e9ecef; border-bottom: 1px solid #e9ecef;">
                   <div style="display: flex; align-items: baseline; gap: 15px; margin-bottom: 10px;">
-                    <span style="font-size: 32px; font-weight: 700; color: #198754;">${{ product.final_price }}</span>
-                    <span style="font-size: 20px; color: #6c757d; text-decoration: line-through;">${{ product.price }}</span>
+                    <span style="font-size: 32px; font-weight: 700; color: #198754;">₹{{ product.final_price }}</span>
+                    <span style="font-size: 20px; color: #6c757d; text-decoration: line-through;">₹{{ product.price }}</span>
                     <span style="background: #d4edda; color: #155724; padding: 4px 10px; border-radius: 4px; font-size: 14px; font-weight: 600;">{{ product.discount }}% off</span>
                   </div>
-                  <p style="color: #198754; font-weight: 500; margin: 0;">You Save: ${% widthratio product.price 1 1|floatformat:0|add:0|add:product.final_price|floatformat:0 %}</p>
+                  <p style="color: #198754; font-weight: 500; margin: 0;">You Save: ₹{% widthratio product.price 1 1|floatformat:0|add:0|add:product.final_price|floatformat:0 %}</p>
                 </div>
                 
                 <div style="margin: 20px 0;">
                   <p style="color: #6c757d; font-size: 14px; margin: 5px 0;"><strong>Category:</strong> {{ product.main_category.name }}</p>
                   <p style="color: #198754; font-weight: 600; margin: 5px 0;">✓ In Stock</p>
-                  <p style="color: #6c757d; font-size: 14px; margin: 5px 0;">Free delivery on orders above $50</p>
+                  <p style="color: #6c757d; font-size: 14px; margin: 5px 0;">Free delivery on orders above ₹50</p>
                 </div>
                 
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">

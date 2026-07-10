@@ -22,5 +22,4 @@ urlpatterns = [
 
     path('api/products/', views.product_list_api),
 
-
 ]

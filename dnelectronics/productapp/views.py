@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from .models import Product
 from .models import MainCategory, Cart
+from django.contrib.auth.decorators import login_required
 
 # Updated view
 def dashboard(request):
@@ -22,7 +23,7 @@ def dashboard(request):
 
 from .models import Product
 
-
+@login_required
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     
@@ -42,7 +43,6 @@ def product_detail(request, pk):
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
 from .models import Cart
 from productapp.models import Product
 
@@ -171,6 +171,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Product, Order
 from django.contrib.auth.models import User
+
+@login_required
 def order_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     
