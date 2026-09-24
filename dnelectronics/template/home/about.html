@@ -3,67 +3,498 @@
 {% block title %}About Us{% endblock %}
 
 {% block content %}
+
 <style>
-.about-root { --primary: #1e293b; --secondary: #64748b; --accent: #2563eb; --light: #f1f5f9; }
-.about-main { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
-.about-founder { display: flex; align-items: flex-start; gap: 3rem; padding: 2rem 0; }
-.about-image-wrapper { flex-shrink: 0; }
-.about-image { width: 400px; height: 400px; border-radius: 50%; object-fit: cover; transition: transform 0.3s ease; box-shadow: 0 10px 30px rgba(30, 41, 59, 0.15); }
-.about-image:hover { transform: scale(1.02); }
-.about-text { flex: 1; padding-left: 1rem; }
-.about-title { color: var(--primary); font-size: 2.8rem; font-weight: 800; margin-bottom: 0.5rem; line-height: 1.2; }
-.about-subtitle { color: var(--accent); font-size: 1.1rem; font-weight: 500; margin-bottom: 1.5rem; }
-.about-description { color: var(--secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.2rem; }
-.about-quote { color: var(--primary); font-size: 1.1rem; font-style: italic; border-left: 3px solid var(--accent); padding-left: 1.5rem; margin: 1.5rem 0; }
-.about-platform { background: var(--light); padding: 3rem 0; margin-top: 2rem; }
-.about-platform-content { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-.about-platform h2 { color: var(--primary); font-size: 2.2rem; font-weight: 700; margin-bottom: 2rem; text-align: center; }
-.about-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
-.about-card { background: white; padding: 2rem; border-radius: 6px; box-shadow: 0 2px 8px rgba(30, 41, 59, 0.08); }
-.about-card h3 { color: var(--primary); font-size: 1.2rem; font-weight: 600; margin-bottom: 0.8rem; }
-.about-card p { color: var(--secondary); line-height: 1.6; }
-@media (max-width: 768px) {
-  .about-founder { flex-direction: column; align-items: center; text-align: center; gap: 2rem; }
-  .about-image { width: 300px; height: 300px; }
-  .about-text { padding-left: 0; }
-  .about-title { font-size: 2.2rem; }
+.about-root {
+  --primary: #172033;
+  --secondary: #667085;
+  --accent: #2563eb;
+  --light: #f6f8fb;
+  --border: #e5e7eb;
+  background: #fff;
+  color: var(--primary);
+}
+
+/* Main container */
+.about-container {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* Intro */
+.about-intro {
+  padding: 48px 0 42px;
+}
+
+.about-intro-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(380px, 0.85fr);
+  gap: 64px;
+  align-items: center;
+}
+
+.about-label {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  margin-bottom: 13px;
+}
+
+.about-intro h1 {
+  max-width: 650px;
+  font-size: clamp(38px, 4.2vw, 52px);
+  line-height: 1.08;
+  letter-spacing: -2px;
+  margin: 0 0 20px;
+  font-weight: 800;
+}
+
+.about-intro h1 span {
+  color: var(--accent);
+}
+
+.about-intro p {
+  max-width: 590px;
+  color: var(--secondary);
+  font-size: 16px;
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* Image */
+.about-visual {
+  width: 100%;
+  position: relative;
+}
+
+.about-image-frame {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #edf2f7;
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.09);
+}
+
+.about-image-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(37, 99, 235, 0.08),
+    transparent 45%
+  );
+  pointer-events: none;
+}
+
+.about-image-frame img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Owner */
+.about-owner {
+  background: var(--light);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 45px 0;
+}
+
+.about-owner-grid {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.about-owner-card {
+  width: 220px;
+  height: 220px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+}
+
+.about-owner-avatar {
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #eff6ff, #dbeafe);
+  border: 1px solid #d4e4fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.about-owner-content h2 {
+  font-size: 34px;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  margin: 0 0 7px;
+}
+
+.about-owner-role {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 17px;
+}
+
+.about-owner-content p {
+  max-width: 760px;
+  color: var(--secondary);
+  font-size: 15px;
+  line-height: 1.75;
+  margin: 0 0 10px;
+}
+
+.about-owner-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Products */
+.about-business {
+  padding: 48px 0 52px;
+}
+
+.about-business-heading {
+  margin-bottom: 25px;
+}
+
+.about-business-heading h2 {
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -0.8px;
+  margin: 0 0 9px;
+}
+
+.about-business-heading p {
+  color: var(--secondary);
+  font-size: 15px;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 680px;
+}
+
+.about-products {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.about-product {
+  padding: 25px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fff;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.about-product:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+}
+
+.about-product-number {
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+
+.about-product h3 {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.about-product p {
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Bottom */
+.about-bottom {
+  background: var(--primary);
+  color: #fff;
+  padding: 32px 0;
+}
+
+.about-bottom-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+}
+
+.about-bottom h2 {
+  font-size: 22px;
+  margin: 0 0 4px;
+}
+
+.about-bottom p {
+  color: #b9c2d0;
+  font-size: 13px;
+  margin: 0;
+}
+
+.about-bottom-brand {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 850px) {
+  .about-intro-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .about-visual {
+    max-width: 650px;
+  }
+
+  .about-image-frame {
+    height: 300px;
+  }
+
+  .about-owner-grid {
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 30px;
+  }
+
+  .about-owner-card {
+    width: 180px;
+    height: 180px;
+  }
+
+  .about-products {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-container {
+    width: min(100% - 32px, 1120px);
+  }
+
+  .about-intro {
+    padding: 35px 0;
+  }
+
+  .about-intro-grid {
+    gap: 25px;
+  }
+
+  .about-intro h1 {
+    font-size: 38px;
+    letter-spacing: -1.4px;
+  }
+
+  .about-image-frame {
+    height: 240px;
+    border-radius: 17px;
+  }
+
+  .about-owner {
+    padding: 35px 0;
+  }
+
+  .about-owner-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .about-owner-card {
+    width: 150px;
+    height: 150px;
+  }
+
+  .about-owner-avatar {
+    width: 90px;
+    height: 90px;
+    font-size: 24px;
+  }
+
+  .about-owner-content h2 {
+    font-size: 29px;
+  }
+
+  .about-business {
+    padding: 38px 0 42px;
+  }
+
+  .about-business-heading h2 {
+    font-size: 28px;
+  }
+
+  .about-bottom-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
 }
 </style>
 
 <div class="about-root">
-  <div class="about-main">
-    <div class="about-founder">
-      <div class="about-image-wrapper">
-        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500&h=500&fit=crop&crop=face" alt="Founder" class="about-image">
-      </div>
-      <div class="about-text">
-        <h1 class="about-title">Michael Rodriguez</h1>
-        <p class="about-subtitle">Founder & Chief Executive Officer</p>
-        <p class="about-description">Michael is a visionary entrepreneur with over 18 years of experience in technology and business development. He previously served as VP of Engineering at two unicorn startups and has a proven track record of scaling products from concept to millions of users.</p>
-        <p class="about-quote">"Great products are born from understanding real problems and crafting elegant solutions that users love."</p>
-        <p class="about-description">Under his leadership, our platform has grown to serve over 500,000 users worldwide while maintaining a 98% customer satisfaction rate.</p>
-      </div>
-    </div>
-  </div>
 
-  <div class="about-platform">
-    <div class="about-platform-content">
-      <h2>Our Platform</h2>
-      <div class="about-cards">
-        <div class="about-card">
-          <h3>Cutting-Edge Technology</h3>
-          <p>Built on modern cloud infrastructure with advanced security protocols, ensuring 99.99% uptime and enterprise-grade reliability for all users.</p>
+  <!-- ABOUT -->
+  <section class="about-intro">
+    <div class="about-container">
+      <div class="about-intro-grid">
+
+        <div class="about-intro-content">
+          <div class="about-label">About DN Electronics</div>
+
+          <h1>
+            Your everyday source for
+            <span>mobile accessories.</span>
+          </h1>
+
+          <p>
+            DN Electronics is a retail business operated by Dhiman Nandi,
+            offering phone covers, cases, chargers, cables and other small
+            electronic accessories for everyday use.
+          </p>
         </div>
-        <div class="about-card">
-          <h3>User Experience Focus</h3>
-          <p>Every feature is designed with extensive user testing and feedback, creating intuitive interfaces that users actually enjoy using.</p>
+
+        <div class="about-visual">
+          <div class="about-image-frame">
+            <img
+              src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?auto=format&fit=crop&w=1000&q=85"
+              alt="Mobile phone accessories">
+          </div>
         </div>
-        <div class="about-card">
-          <h3>Scalable Solutions</h3>
-          <p>Our architecture supports growth from startup to enterprise, with flexible pricing and features that adapt to your needs.</p>
-        </div>
+
       </div>
     </div>
-  </div>
+  </section>
+
+
+  <!-- OWNER -->
+  <section class="about-owner">
+    <div class="about-container">
+
+      <div class="about-owner-grid">
+
+        <div class="about-owner-card">
+          <div class="about-owner-avatar">DN</div>
+        </div>
+
+        <div class="about-owner-content">
+
+          <div class="about-label">The Owner</div>
+
+          <h2>Dhiman Nandi</h2>
+
+          <div class="about-owner-role">
+            Owner &amp; Operator — DN Electronics
+          </div>
+
+          <p>
+            Dhiman Nandi runs DN Electronics, a business focused on providing
+            practical mobile and electronic accessories to customers.
+          </p>
+
+          <p>
+            The store offers products such as phone covers and cases,
+            charging cables, chargers and other small accessories that are
+            useful in everyday life.
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- PRODUCTS -->
+  <section class="about-business">
+    <div class="about-container">
+
+      <div class="about-business-heading">
+        <div class="about-label">Our Products</div>
+
+        <h2>What you can find at DN Electronics</h2>
+
+        <p>
+          A straightforward range of useful mobile and electronic accessories
+          for everyday devices.
+        </p>
+      </div>
+
+      <div class="about-products">
+
+        <div class="about-product">
+          <div class="about-product-number">01</div>
+          <h3>Phone Covers &amp; Cases</h3>
+          <p>
+            Covers and cases for protecting and personalizing mobile phones.
+          </p>
+        </div>
+
+        <div class="about-product">
+          <div class="about-product-number">02</div>
+          <h3>Chargers &amp; Cables</h3>
+          <p>
+            Everyday charging accessories including chargers and connection
+            cables.
+          </p>
+        </div>
+
+        <div class="about-product">
+          <div class="about-product-number">03</div>
+          <h3>Mobile Accessories</h3>
+          <p>
+            Other small and practical accessories for everyday mobile use.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <section class="about-bottom">
+    <div class="about-container">
+      <div class="about-bottom-inner">
+
+        <div>
+          <h2>DN Electronics</h2>
+          <p>Mobile accessories and everyday electronic products.</p>
+        </div>
+
+        <div class="about-bottom-brand">
+          Owned by Dhiman Nandi
+        </div>
+
+      </div>
+    </div>
+  </section>
+
 </div>
+
 {% endblock %}

@@ -1,849 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
-
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anon - eCommerce Website</title>
+  <title>DN Electronics</title>
+  <link rel="shortcut icon" href="{% static '123.png' %}" type="image/x-icon">
 
-  <!--
-    - favicon
-  -->
-  <link rel="shortcut icon" href="./assets/images/logo/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'css/style-prefix.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-  <!--
-    - custom css link
-  -->
-<link rel="stylesheet" href="{% static 'css/style-prefix.css' %}">
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <!--
-    - google font link
-  -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!--
-    - SITE-WIDE PROFESSIONAL THEME OVERRIDE
-    - Navy / slate / gold palette on soft neutral surfaces, replacing the
-      previous default red/black look. !important is used because
-      style.css rules are highly specific; JS fallbacks below guarantee
-      the header top bar wins the cascade regardless.
-  -->
   <style>
-    :root {
-      --ink-900: #10192B;
-      --ink-700: #1E293B;
-      --ink-500: #47536B;
-      --ink-300: #8892A6;
-      --line: #E4E8F0;
-      --surface: #FFFFFF;
-      --bg-soft: #F3F5F9;
-      --navy: #16233F;
-      --navy-dark: #0D1729;
-      --navy-darker: #0A121F;
-      --gold: #C6981F;
-      --gold-light: #E8C766;
-      --gold-dark: #A87E17;
-      --teal: #1D7A66;
-      --slate: #5C6B84;
+    :root{
+      --ink:#1a1a1a; --muted:#6b6b6b; --line:#e3e3e3;
+      --bg:#ffffff; --bg-soft:#f6f6f7;
+      --accent:#008060; --accent-dark:#004c3f; --accent-soft:#e3f1ec;
+    }
+    *{ box-sizing:border-box; }
+    body{ font-family:'Inter',sans-serif; color:var(--ink); margin:0; }
+    a{ text-decoration:none; color:inherit; }
+
+    .topbar{ background:var(--accent-dark); color:#eafff6; font-size:13px; }
+    .topbar-inner{ max-width:1280px; margin:0 auto; padding:8px 24px; display:flex; align-items:center;
+      justify-content:center; gap:8px; font-weight:500; letter-spacing:.01em; }
+    .topbar-inner ion-icon{ font-size:15px; color:#7fe0bf; }
+
+    .site-header{ position:sticky; top:0; z-index:100; margin-bottom:40px; }
+    .navbar{ background:var(--bg); border-bottom:3px solid var(--accent); position:relative; }
+    .navbar-inner{ max-width:1280px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:28px; }
+
+    .brand{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+    .brand-logo{ height:34px; width:auto; display:block; }
+    .brand-name{ font-weight:800; font-size:17px; letter-spacing:-.01em; color:var(--ink); }
+    .brand-name span{ color:var(--accent); }
+
+    .nav-links{ display:flex; gap:26px; flex-shrink:0; }
+    .nav-links a{ font-weight:500; font-size:14.5px; color:var(--ink); padding:6px 0; border-bottom:2px solid transparent; }
+    .nav-links a:hover{ color:var(--accent); border-color:var(--accent); }
+
+    .search-form{ flex:1; max-width:420px; display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:var(--bg-soft); }
+    .search-form:focus-within{ border-color:var(--accent); }
+    .search-form input{ flex:1; border:none; outline:none; padding:9px 12px; font-size:14px; background:transparent; }
+    .search-form button{ border:none; background:transparent; padding:0 14px; cursor:pointer; color:var(--muted); font-size:18px; display:flex; align-items:center; }
+    .search-form button:hover{ color:var(--accent); }
+
+    .nav-actions{ display:flex; align-items:center; gap:8px; margin-left:auto; flex-shrink:0; }
+
+    .auth-link{ display:flex; align-items:center; gap:6px; font-size:13.5px; font-weight:600; padding:8px 14px;
+      border-radius:8px; color:var(--ink); white-space:nowrap; }
+    .auth-link:hover{ background:var(--bg-soft); }
+    .auth-link.primary{ background:var(--accent); color:#fff; }
+    .auth-link.primary:hover{ background:var(--accent-dark); }
+    .auth-divider{ width:1px; height:22px; background:var(--line); margin:0 4px; }
+
+    .icon-btn{ position:relative; display:flex; align-items:center; justify-content:center; width:40px; height:40px;
+      border-radius:8px; color:var(--ink); font-size:21px; background:none; border:none; cursor:pointer; }
+    .icon-btn:hover{ background:var(--accent-soft); color:var(--accent); }
+    .badge{ position:absolute; top:2px; right:2px; background:var(--accent); color:#fff; font-size:10px; font-weight:700;
+      min-width:15px; height:15px; border-radius:999px; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+
+    .hamburger{ display:none; }
+
+    @media (max-width:880px){
+      .nav-links, .search-form, .auth-link, .search-toggle{ display:none !important; }
+      .navbar-inner{ padding:10px 16px; gap:10px; }
+      .brand-logo{ height:26px; }
+      .brand-name{ font-size:15px; }
+      .site-header{ margin-bottom:30px; }
+      .topbar-inner{ padding:7px 16px; font-size:12px; }
+      .hamburger{ display:flex; align-items:center; justify-content:center; width:40px; height:40px;
+        border-radius:8px; background:none; border:none; font-size:24px; color:var(--ink); cursor:pointer; }
+      .hamburger:hover{ background:var(--accent-soft); color:var(--accent); }
     }
 
-    body { background-color: var(--bg-soft) !important; }
+    .drawer-overlay{ position:fixed; inset:0; background:rgba(17,24,39,.45); opacity:0; pointer-events:none;
+      transition:.25s; z-index:9998; }
+    .drawer-overlay.open{ opacity:1; pointer-events:auto; }
+    .mobile-drawer{ position:fixed; top:0; left:0; height:100%; width:290px; max-width:84vw; background:#fff;
+      transform:translateX(-100%); transition:.25s ease; z-index:9999; box-shadow:8px 0 24px rgba(0,0,0,.12);
+      display:flex; flex-direction:column; }
+    .mobile-drawer.open{ transform:translateX(0); }
+    .drawer-head{ display:flex; justify-content:space-between; align-items:center; padding:18px 20px; border-bottom:1px solid var(--line); font-weight:700; background:var(--accent-dark); color:#fff; }
+    .drawer-head button{ background:none; border:none; font-size:24px; cursor:pointer; color:#fff; }
+    .drawer-search{ display:flex; border:1px solid var(--line); border-radius:8px; overflow:hidden; margin:16px 20px; }
+    .drawer-search input{ flex:1; border:none; outline:none; padding:10px 12px; font-size:14px; }
+    .drawer-search button{ border:none; background:var(--bg-soft); padding:0 14px; color:var(--muted); font-size:17px; }
+    .drawer-links{ display:flex; flex-direction:column; padding:0 0 10px; overflow-y:auto; }
+    .drawer-links a{ padding:13px 20px; font-size:15px; font-weight:500; border-bottom:1px solid var(--bg-soft); }
+    .drawer-links a:hover{ background:var(--accent-soft); color:var(--accent-dark); }
+    .drawer-links a.primary{ color:var(--accent); font-weight:700; }
+    .drawer-section-label{ padding:16px 20px 4px; font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); }
 
-    /* ---- Top announcement bar ---- */
-    html body .header-top,
-    html body .header-top.header-top.header-top {
-      background: var(--navy-dark) !important;
-      background-color: var(--navy-dark) !important;
-      background-image: none !important;
-      border-bottom: 1px solid rgba(230, 199, 102, 0.15) !important;
-    }
-    html body .header-top .header-social-container {
-      display: flex !important;
-      align-items: center !important;
-      gap: 10px !important;
-      list-style: none !important;
-    }
-    html body .header-top .social-link {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      width: 30px !important;
-      height: 30px !important;
-      border-radius: 50% !important;
-      background: rgba(255,255,255,0.07) !important;
-      border: 1px solid rgba(255,255,255,0.12) !important;
-      color: #C7CEDC !important;
-      font-size: 14px !important;
-      line-height: 1 !important;
-      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease !important;
-    }
-    html body .header-top .social-link:hover {
-      background: var(--gold) !important;
-      border-color: var(--gold) !important;
-      color: var(--navy-dark) !important;
-      transform: translateY(-2px) !important;
-    }
-    html body .header-alert-news p {
-      color: #EAEDF3 !important;
-      letter-spacing: 0.02em !important;
-    }
-    html body .header-alert-news p b {
-      color: var(--gold-light) !important;
-      font-weight: 700 !important;
-    }
-    html body .header-top-actions select {
-      background: transparent !important;
-      color: #EAEDF3 !important;
-      border: 1px solid rgba(255,255,255,0.2) !important;
-      border-radius: 6px !important;
-    }
+    footer{ background:var(--bg-soft); border-top:1px solid var(--line); color:var(--ink); }
+    footer .wrap{ max-width:1280px; margin:0 auto; padding:48px 24px 0; }
+    footer .grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:36px; padding-bottom:36px; }
+    footer h3{ margin:0 0 10px; font-size:19px; font-weight:800; }
+    footer h4{ margin:0 0 14px; font-size:13px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); }
+    footer p{ color:var(--muted); font-size:14px; line-height:1.6; }
+    footer .links{ display:flex; flex-direction:column; gap:10px; }
+    footer .links a{ color:var(--muted); font-size:14px; }
+    footer .links a:hover{ color:var(--accent); }
+    footer .socials{ display:flex; gap:10px; margin-top:16px; }
+    footer .socials a{ width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:#fff;
+      display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:16px; }
+    footer .socials a:hover{ background:var(--accent); border-color:var(--accent); color:#fff; }
+    footer .bottom{ border-top:1px solid var(--line); padding:18px 0; display:flex; justify-content:space-between;
+      align-items:center; flex-wrap:wrap; gap:10px; font-size:13px; color:var(--muted); }
 
-    /* ---- Main header ---- */
-    html body .header-main {
-      background: var(--surface) !important;
-      border-bottom: 1px solid var(--line) !important;
-    }
-    html body .header-search-container .search-field {
-      background: var(--bg-soft) !important;
-      border: 1px solid var(--line) !important;
-      color: var(--ink-900) !important;
-    }
-    html body .header-search-container .search-btn {
-      background: var(--navy) !important;
-      color: #fff !important;
-    }
-    html body .header-search-container .search-btn:hover {
-      background: var(--navy-dark) !important;
-    }
-    html body .header-user-actions .action-btn {
-      color: var(--ink-700) !important;
-    }
-    html body .header-user-actions .action-btn:hover {
-      color: var(--gold-dark) !important;
-    }
-    html body .header-user-actions .action-btn .count {
-      background: var(--gold) !important;
-      color: var(--navy-dark) !important;
-    }
-
-    /* ---- Mobile bottom nav & side menu ---- */
-    html body .mobile-bottom-navigation {
-      background: var(--surface) !important;
-      border-top: 1px solid var(--line) !important;
-      box-shadow: 0 -4px 20px rgba(16, 25, 43, 0.06) !important;
-    }
-    html body .mobile-bottom-navigation .action-btn { color: var(--ink-500) !important; }
-    html body .mobile-bottom-navigation .action-btn .count {
-      background: var(--gold) !important;
-      color: var(--navy-dark) !important;
-    }
-    html body .mobile-navigation-menu {
-      background: var(--surface) !important;
-      color: var(--ink-700) !important;
-    }
-    html body .mobile-navigation-menu .menu-title { color: var(--ink-900) !important; }
-    html body .mobile-navigation-menu .submenu-title { color: var(--ink-500) !important; }
-    html body .mobile-navigation-menu .submenu-title:hover,
-    html body .mobile-navigation-menu .menu-title:hover { color: var(--navy) !important; }
-    html body .accordion-menu.active .menu-title,
-    html body .accordion-menu .add-icon,
-    html body .accordion-menu .remove-icon { color: var(--gold) !important; }
-    html body .menu-social-container .social-link {
-      background: var(--bg-soft) !important;
-      color: var(--ink-500) !important;
-      border: 1px solid var(--line) !important;
-    }
-    html body .menu-social-container .social-link:hover {
-      background: var(--navy) !important;
-      color: #fff !important;
-      border-color: var(--navy) !important;
+    @media (max-width:768px){
+      footer .grid{ grid-template-columns:1fr 1fr; gap:28px; }
+      footer .bottom{ flex-direction:column; text-align:center; }
     }
   </style>
-
 </head>
 
 <body>
 
-  <header>
-
-    <div class="header-top">
-
-      <div class="container">
-
-        <ul class="header-social-container">
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-facebook"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-twitter"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
-
-        </ul>
-
-        <div class="header-alert-news">
-          <p>
-            <b>Free Shipping</b>
-            This Week Order Over - $55
-          </p>
-        </div>
-
-        <div class="header-top-actions">
-
-          <select name="currency">
-
-            <option value="usd">USD &dollar;</option>
-            <option value="eur">EUR &euro;</option>
-
-          </select>
-
-          <!-- <select name="language">
-
-            <option value="en-US">English</option>
-            <option value="es-ES">Espa&ntilde;ol</option>
-            <option value="fr">Fran&ccedil;ais</option>
-
-          </select> -->
-
-        </div>
-
+  <header class="site-header">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <ion-icon name="rocket-outline"></ion-icon>
+        Free shipping on orders over $55
       </div>
-
     </div>
 
-    <script>
-      // Bulletproof override for the top announcement bar: guarantees the
-      // navy background wins the cascade regardless of style.css specificity.
-      (function () {
-        var topBar = document.querySelector('.header-top');
-        if (topBar) {
-          topBar.style.setProperty('background', '#0D1729', 'important');
-          topBar.style.setProperty('background-image', 'none', 'important');
-        }
-        document.querySelectorAll('.header-top .social-link').forEach(function (link) {
-          link.style.setProperty('width', '30px', 'important');
-          link.style.setProperty('height', '30px', 'important');
-          link.style.setProperty('display', 'flex', 'important');
-          link.style.setProperty('align-items', 'center', 'important');
-          link.style.setProperty('justify-content', 'center', 'important');
-          link.style.setProperty('border-radius', '50%', 'important');
-          link.style.setProperty('background', 'rgba(255,255,255,0.07)', 'important');
-          link.style.setProperty('font-size', '14px', 'important');
-        });
-      })();
-    </script>
-
-    <div class="header-main">
-
-      <div class="container">
-
-        <a href="{% url 'dashboard' %}" class="header-logo">
-          <img style="width: 150px; "  src="{% static '123.png' %}" alt="Anon's logo" >
-           <!-- <h2>Dnelectronics</h2> -->
+    <div class="navbar">
+      <div class="navbar-inner">
+        <a href="{% url 'home' %}" class="brand">
+          <img src="{% static '123.png' %}" alt="DN Electronics" class="brand-logo">
+          <span class="brand-name">DN<span>Electronics</span></span>
         </a>
 
-        <div class="header-search-container">
-  <form method="GET" action="{% url 'search_view' %}" style="display: flex;">
-    <input type="search" name="search" class="search-field" placeholder="Enter your product name..." value="{{ request.GET.search }}">
-    <button type="submit" class="search-btn">
-      <ion-icon name="search-outline"></ion-icon>
-    </button>
-  </form>
-</div>
+        <nav class="nav-links">
+          <a href="{% url 'home' %}">Home</a>
+          <a href="{% url 'dashboard' %}">Shop</a>
+          <a href="{% url 'category_view' %}">Categories</a>
+          <a href="{% url 'about_us' %}">About</a>
+          <a href="{% url 'contact_us' %}">Contact</a>
+        </nav>
 
-        <div class="header-user-actions">
+        <form class="search-form" method="GET" action="{% url 'search_view' %}">
+          <input type="search" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
+          <button type="submit"><ion-icon name="search-outline"></ion-icon></button>
+        </form>
 
-          <button class="action-btn" onclick="window.location.href='{% url 'account_details'  %}'">
-            <ion-icon name="person-outline"></ion-icon>
-          </button>
+        <div class="nav-actions">
+          {% if user.is_authenticated %}
+            <a href="{% url 'account_details' %}" class="auth-link">
+              <ion-icon name="person-circle-outline" style="font-size:18px;"></ion-icon>
+              <span>{{ user.first_name|default:user.username }}</span>
+            </a>
+            <div class="auth-divider"></div>
+            <a href="{% url 'logout' %}" class="auth-link">
+              <ion-icon name="log-out-outline" style="font-size:18px;"></ion-icon>
+              <span>Logout</span>
+            </a>
+          {% else %}
+            <a href="{% url 'login' %}" class="auth-link"><span>Login</span></a>
+            <a href="{% url 'register' %}" class="auth-link primary"><span>Sign Up</span></a>
+          {% endif %}
 
-          <!-- <button class="action-btn">
-            <ion-icon name="heart-outline"></ion-icon>
-            <span class="count">0</span>
-          </button> -->
-
-         <button class="action-btn" onclick="window.location.href='{% url 'cart_view'  %}'">
+          <a href="{% url 'cart_view' %}" class="icon-btn">
             <ion-icon name="bag-handle-outline"></ion-icon>
-        </button>
+            {% if cart_count %}<span class="badge">{{ cart_count }}</span>{% endif %}
+          </a>
 
+          <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" type="button">
+            <ion-icon name="menu-outline"></ion-icon>
+          </button>
         </div>
-
       </div>
-
     </div>
-
-
-
-    <div class="mobile-bottom-navigation">
-
-      <button class="action-btn" data-mobile-menu-open-btn>
-        <ion-icon name="menu-outline"></ion-icon>
-      </button>
-
-      <button class="action-btn">
-        <ion-icon name="bag-handle-outline"></ion-icon>
-
-        <span class="count">0</span>
-      </button>
-
-      <button class="action-btn">
-        <ion-icon name="home-outline"></ion-icon>
-      </button>
-
-      <button class="action-btn">
-        <ion-icon name="heart-outline"></ion-icon>
-
-        <span class="count">0</span>
-      </button>
-
-      <button class="action-btn" data-mobile-menu-open-btn>
-        <ion-icon name="grid-outline"></ion-icon>
-      </button>
-
-    </div>
-
-    <nav class="mobile-navigation-menu  has-scrollbar" data-mobile-menu>
-
-      <div class="menu-top">
-        <h2 class="menu-title">Menu</h2>
-
-        <button class="menu-close-btn" data-mobile-menu-close-btn>
-          <ion-icon name="close-outline"></ion-icon>
-        </button>
-      </div>
-
-      <ul class="mobile-menu-category-list">
-
-        <li class="menu-category">
-          <a href="#" class="menu-title">Home</a>
-        </li>
-
-        <li class="menu-category">
-
-          <button class="accordion-menu" data-accordion-btn>
-            <p class="menu-title">Men's</p>
-
-            <div>
-              <ion-icon name="add-outline" class="add-icon"></ion-icon>
-              <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
-            </div>
-          </button>
-
-          <ul class="submenu-category-list" data-accordion>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Shirt</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Shorts & Jeans</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Safety Shoes</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Wallet</a>
-            </li>
-
-          </ul>
-
-        </li>
-
-        <li class="menu-category">
-
-          <button class="accordion-menu" data-accordion-btn>
-            <p class="menu-title">Women's</p>
-
-            <div>
-              <ion-icon name="add-outline" class="add-icon"></ion-icon>
-              <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
-            </div>
-          </button>
-
-          <ul class="submenu-category-list" data-accordion>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Dress & Frock</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Earrings</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Necklace</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Makeup Kit</a>
-            </li>
-
-          </ul>
-
-        </li>
-
-        <li class="menu-category">
-
-          <button class="accordion-menu" data-accordion-btn>
-            <p class="menu-title">Jewelry</p>
-
-            <div>
-              <ion-icon name="add-outline" class="add-icon"></ion-icon>
-              <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
-            </div>
-          </button>
-
-          <ul class="submenu-category-list" data-accordion>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Earrings</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Couple Rings</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Necklace</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Bracelets</a>
-            </li>
-
-          </ul>
-
-        </li>
-
-        <li class="menu-category">
-
-          <button class="accordion-menu" data-accordion-btn>
-            <p class="menu-title">Perfume</p>
-
-            <div>
-              <ion-icon name="add-outline" class="add-icon"></ion-icon>
-              <ion-icon name="remove-outline" class="remove-icon"></ion-icon>
-            </div>
-          </button>
-
-          <ul class="submenu-category-list" data-accordion>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Clothes Perfume</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Deodorant</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Flower Fragrance</a>
-            </li>
-
-            <li class="submenu-category">
-              <a href="#" class="submenu-title">Air Freshener</a>
-            </li>
-
-          </ul>
-
-        </li>
-
-        <li class="menu-category">
-          <a href="#" class="menu-title">Blog</a>
-        </li>
-
-        <li class="menu-category">
-          <a href="#" class="menu-title">Hot Offers</a>
-        </li>
-
-      </ul>
-
-      <div class="menu-bottom">
-
-        <ul class="menu-category-list">
-
-          <li class="menu-category">
-
-            <button class="accordion-menu" data-accordion-btn>
-              <p class="menu-title">Language</p>
-
-              <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
-            </button>
-
-            <ul class="submenu-category-list" data-accordion>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">English</a>
-              </li>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">Espa&ntilde;ol</a>
-              </li>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">Fren&ccedil;h</a>
-              </li>
-
-            </ul>
-
-          </li>
-
-          <li class="menu-category">
-            <button class="accordion-menu" data-accordion-btn>
-              <p class="menu-title">Currency</p>
-              <ion-icon name="caret-back-outline" class="caret-back"></ion-icon>
-            </button>
-
-            <ul class="submenu-category-list" data-accordion>
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">USD &dollar;</a>
-              </li>
-
-              <li class="submenu-category">
-                <a href="#" class="submenu-title">EUR &euro;</a>
-              </li>
-            </ul>
-          </li>
-
-        </ul>
-
-        <ul class="menu-social-container">
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-facebook"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-twitter"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-instagram"></ion-icon>
-            </a>
-          </li>
-
-          <li>
-            <a href="#" class="social-link">
-              <ion-icon name="logo-linkedin"></ion-icon>
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-    </nav>
-
   </header>
 
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-head">
+      <span>Menu</span>
+      <button id="drawerCloseBtn" aria-label="Close menu" type="button"><ion-icon name="close-outline"></ion-icon></button>
+    </div>
 
+    <form class="drawer-search" method="GET" action="{% url 'search_view' %}">
+      <input type="search" name="search" placeholder="Search products..." value="{{ request.GET.search }}">
+      <button type="submit"><ion-icon name="search-outline"></ion-icon></button>
+    </form>
 
+    <nav class="drawer-links">
+      <a href="{% url 'home' %}">Home</a>
+      <a href="{% url 'dashboard' %}">Shop</a>
+      <a href="{% url 'category_view' %}">Categories</a>
+      <a href="{% url 'about_us' %}">About</a>
+      <a href="{% url 'contact_us' %}">Contact</a>
+      <a href="{% url 'cart_view' %}">Cart</a>
 
-
-  <!--
-    - MAIN
-  -->
+      <div class="drawer-section-label">Account</div>
+      {% if user.is_authenticated %}
+        <a href="{% url 'account_details' %}">My Account</a>
+        <a href="{% url 'order_list' %}">My Orders</a>
+        <a href="{% url 'logout' %}">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="primary">Login</a>
+        <a href="{% url 'register' %}">Create Account</a>
+      {% endif %}
+    </nav>
+  </aside>
 
   <main>
-{% block content %}{% endblock %}
-
-
+    {% block content %}{% endblock %}
   </main>
 
-
-
-
-
-  <!--
-    - FOOTER   start 
-  -->
-<footer style="background: linear-gradient(180deg, #0D1729 0%, #0A121F 100%); color: #EAEDF3; padding: 0 0 24px; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; position: relative;">
-    <div style="height: 3px; background: linear-gradient(90deg, #16233F 0%, #C6981F 50%, #16233F 100%);"></div>
-    <div style="max-width: 1200px; margin: 0 auto; padding: 56px 40px 0;">
-
-        <!-- Main Footer Content -->
-        <div style="display: grid; grid-template-columns: 1.3fr 1fr 1fr 1.2fr; gap: 48px; margin-bottom: 40px;">
-
-            <!-- Company -->
-            <div>
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                    <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(198,152,31,0.14); border: 1px solid rgba(198,152,31,0.35); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <ion-icon name="flash" style="color: #C6981F; font-size: 19px;"></ion-icon>
-                    </div>
-                    <h3 style="margin: 0; font-size: 20px; font-weight: 700; letter-spacing: 0.02em; color: #ffffff;">DN<span style="color: #C6981F;">ELECTRONICS</span></h3>
-                </div>
-                <p style="color: #94A0B8; line-height: 1.7; margin-bottom: 20px; font-size: 14px;">Premium electronics and technology solutions, chosen for reliability and backed by real support — not just a checkout button.</p>
-
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 22px; color: #94A0B8; font-size: 13px;">
-                    <ion-icon name="location-outline" style="color: #C6981F; font-size: 16px; flex-shrink: 0;"></ion-icon>
-                    <span>Kolkata, West Bengal, India</span>
-                </div>
-
-                <div style="display: flex; gap: 10px;">
-                    <a href="#" style="width: 36px; height: 36px; background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 50%; color: #C7CEDC; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#C6981F'; this.style.borderColor='#C6981F'; this.style.color='#0D1729'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,255,255,0.12)'; this.style.color='#C7CEDC'; this.style.transform='translateY(0)'">
-                        <ion-icon name="logo-facebook"></ion-icon>
-                    </a>
-                    <a href="#" style="width: 36px; height: 36px; background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 50%; color: #C7CEDC; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#C6981F'; this.style.borderColor='#C6981F'; this.style.color='#0D1729'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,255,255,0.12)'; this.style.color='#C7CEDC'; this.style.transform='translateY(0)'">
-                        <ion-icon name="logo-instagram"></ion-icon>
-                    </a>
-                    <a href="#" style="width: 36px; height: 36px; background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 50%; color: #C7CEDC; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#C6981F'; this.style.borderColor='#C6981F'; this.style.color='#0D1729'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,255,255,0.12)'; this.style.color='#C7CEDC'; this.style.transform='translateY(0)'">
-                        <ion-icon name="logo-linkedin"></ion-icon>
-                    </a>
-                    <a href="#" style="width: 36px; height: 36px; background-color: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 50%; color: #C7CEDC; font-size: 16px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#C6981F'; this.style.borderColor='#C6981F'; this.style.color='#0D1729'; this.style.transform='translateY(-2px)'" onmouseout="this.style.backgroundColor='rgba(255,255,255,0.06)'; this.style.borderColor='rgba(255,255,255,0.12)'; this.style.color='#C7CEDC'; this.style.transform='translateY(0)'">
-                        <ion-icon name="logo-youtube"></ion-icon>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Products -->
-            <div>
-                <h4 style="margin: 0 0 18px 0; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff; position: relative; padding-bottom: 10px;">Products</h4>
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: -6px;">
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Smartphones</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Laptops</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Audio</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Gaming</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Accessories</a>
-                </div>
-            </div>
-
-            <!-- Support -->
-            <div>
-                <h4 style="margin: 0 0 18px 0; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff; position: relative; padding-bottom: 10px;">Support</h4>
-                <div style="display: flex; flex-direction: column; gap: 12px; margin-top: -6px;">
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Help Center</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Shipping</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Returns</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Warranty</a>
-                    <a href="#" style="color: #94A0B8; text-decoration: none; font-size: 14px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#94A0B8'">Contact</a>
-                </div>
-            </div>
-
-            <!-- Newsletter -->
-            <div>
-                <h4 style="margin: 0 0 18px 0; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff; position: relative; padding-bottom: 10px;">Newsletter</h4>
-                <p style="color: #94A0B8; font-size: 13px; margin-bottom: 16px; line-height: 1.6;">Get updates on new products and deals — no spam, unsubscribe anytime.</p>
-
-                <div style="display: flex; margin-bottom: 18px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.12);">
-                    <input type="email" placeholder="Your email" style="flex: 1; padding: 12px 14px; border: none; background-color: rgba(255,255,255,0.04); color: #fff; font-size: 14px; outline: none;">
-                    <button style="padding: 12px 18px; background-color: #C6981F; color: #0D1729; border: none; font-size: 14px; font-weight: 700; cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#E8C766'" onmouseout="this.style.backgroundColor='#C6981F'">Subscribe</button>
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <ion-icon name="mail-outline" style="color: #C6981F; font-size: 16px;"></ion-icon>
-                        <span style="color: #94A0B8; font-size: 13px;">support@dnelectronics.com</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <ion-icon name="call-outline" style="color: #C6981F; font-size: 16px;"></ion-icon>
-                        <span style="color: #94A0B8; font-size: 13px;">1-800-DN-ELECT</span>
-                    </div>
-                </div>
-            </div>
+  <footer>
+    <div class="wrap">
+      <div class="grid">
+        <div>
+          <h3>DN Electronics</h3>
+          <p>Premium electronics and technology solutions, chosen for reliability and backed by real support.</p>
+          <div class="socials">
+            <a href="https://facebook.com" target="_blank" rel="noopener"><ion-icon name="logo-facebook"></ion-icon></a>
+            <a href="https://instagram.com" target="_blank" rel="noopener"><ion-icon name="logo-instagram"></ion-icon></a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener"><ion-icon name="logo-linkedin"></ion-icon></a>
+          </div>
         </div>
 
-        <!-- Trust Section -->
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 24px 28px; margin-bottom: 28px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 22px;">
-                <div style="display: flex; align-items: center; gap: 36px; flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(198,152,31,0.14); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <ion-icon name="shield-checkmark-outline" style="color: #C6981F; font-size: 19px;"></ion-icon>
-                        </div>
-                        <span style="color: #EAEDF3; font-size: 14px; font-weight: 500;">Secure Payment</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(198,152,31,0.14); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <ion-icon name="flash-outline" style="color: #C6981F; font-size: 19px;"></ion-icon>
-                        </div>
-                        <span style="color: #EAEDF3; font-size: 14px; font-weight: 500;">Fast Shipping</span>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(198,152,31,0.14); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <ion-icon name="headset-outline" style="color: #C6981F; font-size: 19px;"></ion-icon>
-                        </div>
-                        <span style="color: #EAEDF3; font-size: 14px; font-weight: 500;">24/7 Support</span>
-                    </div>
-                </div>
-
-                <!-- Payment Methods -->
-                <div style="display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.92); padding: 8px 16px; border-radius: 10px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" style="height: 20px;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style="height: 16px;">
-                </div>
-            </div>
+        <div>
+          <h4>Shop</h4>
+          <div class="links">
+            <a href="{% url 'dashboard' %}">All Products</a>
+            <a href="{% url 'category_view' %}">Categories</a>
+            <a href="{% url 'search_view' %}">Search</a>
+            <a href="{% url 'cart_view' %}">Cart</a>
+          </div>
         </div>
 
-        <!-- Bottom -->
-        <div style="border-top: 1px solid rgba(255,255,255,0.08); padding: 20px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
-            <span style="color: #6B7690; font-size: 13px;">© 2025 DN Electronics. All rights reserved.</span>
-            <div style="display: flex; gap: 24px;">
-                <a href="#" style="color: #6B7690; text-decoration: none; font-size: 13px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#6B7690'">Privacy</a>
-                <a href="#" style="color: #6B7690; text-decoration: none; font-size: 13px; transition: color 0.2s;" onmouseover="this.style.color='#E8C766'" onmouseout="this.style.color='#6B7690'">Terms</a>
-            </div>
+        <div>
+          <h4>Account</h4>
+          <div class="links">
+            {% if user.is_authenticated %}
+              <a href="{% url 'account_details' %}">My Account</a>
+              <a href="{% url 'order_list' %}">My Orders</a>
+              <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+              <a href="{% url 'login' %}">Login</a>
+              <a href="{% url 'register' %}">Create Account</a>
+            {% endif %}
+          </div>
         </div>
+
+        <div>
+          <h4>Company</h4>
+          <div class="links">
+            <a href="{% url 'about_us' %}">About Us</a>
+            <a href="{% url 'contact_us' %}">Contact Us</a>
+            <a href="{% url 'privacy_policy' %}">Privacy Policy</a>
+            <a href="{% url 'terms_conditions' %}">Terms & Conditions</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom">
+        <span>© 2025 DN Electronics. All rights reserved.</span>
+        <div class="links" style="flex-direction:row; gap:20px;">
+          <a href="{% url 'privacy_policy' %}">Privacy</a>
+          <a href="{% url 'terms_conditions' %}">Terms</a>
+        </div>
+      </div>
     </div>
-</footer>
-
-<style>
-footer h4::after {
-    content: "";
-    display: block;
-    width: 28px;
-    height: 2px;
-    background: #C6981F;
-    margin-top: 8px;
-    border-radius: 2px;
-}
-@media (max-width: 768px) {
-    footer div[style*="grid-template-columns: 1.3fr 1fr 1fr 1.2fr"] {
-        grid-template-columns: 1fr !important;
-        gap: 30px !important;
-    }
-    footer div[style*="justify-content: space-between"] {
-        flex-direction: column !important;
-        gap: 20px !important;
-        text-align: center !important;
-    }
-    footer div[style*="gap: 32px"] {
-        flex-direction: column !important;
-        gap: 20px !important;
-        align-items: flex-start !important;
-    }
-}
-</style>
-
-
-
-<!--
-    - FOOTER  End 
-  -->
-
-
-
-<script src="{% static 'js/script.js' %}"></script>
+  </footer>
 
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-<script>
-    'use strict';
 
-// modal variables
-const modal = document.querySelector('[data-modal]');
-const modalCloseBtn = document.querySelector('[data-modal-close]');
-const modalCloseOverlay = document.querySelector('[data-modal-overlay]');
+  <script>
+    (function () {
+      'use strict';
+      console.log('[drawer-debug] script loaded');
 
-// modal function
-const modalCloseFunc = function () { modal.classList.add('closed') }
+      var hamburgerBtn = document.getElementById('hamburgerBtn');
+      var drawer = document.getElementById('mobileDrawer');
+      var overlay = document.getElementById('drawerOverlay');
+      var drawerCloseBtn = document.getElementById('drawerCloseBtn');
 
-// modal eventListener
-modalCloseOverlay.addEventListener('click', modalCloseFunc);
-modalCloseBtn.addEventListener('click', modalCloseFunc);
+      console.log('[drawer-debug] hamburgerBtn found:', !!hamburgerBtn);
+      console.log('[drawer-debug] drawer found:', !!drawer);
+      console.log('[drawer-debug] overlay found:', !!overlay);
+      console.log('[drawer-debug] drawerCloseBtn found:', !!drawerCloseBtn);
 
-
-
-
-
-// notification toast variables
-const notificationToast = document.querySelector('[data-toast]');
-const toastCloseBtn = document.querySelector('[data-toast-close]');
-
-// notification toast eventListener
-toastCloseBtn.addEventListener('click', function () {
-  notificationToast.classList.add('closed');
-});
-
-
-
-
-
-// mobile menu variables
-const mobileMenuOpenBtn = document.querySelectorAll('[data-mobile-menu-open-btn]');
-const mobileMenu = document.querySelectorAll('[data-mobile-menu]');
-const mobileMenuCloseBtn = document.querySelectorAll('[data-mobile-menu-close-btn]');
-const overlay = document.querySelector('[data-overlay]');
-
-for (let i = 0; i < mobileMenuOpenBtn.length; i++) {
-
-  // mobile menu function
-  const mobileMenuCloseFunc = function () {
-    mobileMenu[i].classList.remove('active');
-    overlay.classList.remove('active');
-  }
-
-  mobileMenuOpenBtn[i].addEventListener('click', function () {
-    mobileMenu[i].classList.add('active');
-    overlay.classList.add('active');
-  });
-
-  mobileMenuCloseBtn[i].addEventListener('click', mobileMenuCloseFunc);
-  overlay.addEventListener('click', mobileMenuCloseFunc);
-
-}
-
-
-
-
-
-// accordion variables
-const accordionBtn = document.querySelectorAll('[data-accordion-btn]');
-const accordion = document.querySelectorAll('[data-accordion]');
-
-for (let i = 0; i < accordionBtn.length; i++) {
-
-  accordionBtn[i].addEventListener('click', function () {
-
-    const clickedBtn = this.nextElementSibling.classList.contains('active');
-
-    for (let i = 0; i < accordion.length; i++) {
-
-      if (clickedBtn) break;
-
-      if (accordion[i].classList.contains('active')) {
-
-        accordion[i].classList.remove('active');
-        accordionBtn[i].classList.remove('active');
-
+      function logDrawerState(label) {
+        if (!drawer) return;
+        var cs = window.getComputedStyle(drawer);
+        console.log('[drawer-debug]', label, {
+          hasOpenClass: drawer.classList.contains('open'),
+          computedTransform: cs.transform,
+          computedZIndex: cs.zIndex,
+          boundingRect: drawer.getBoundingClientRect()
+        });
       }
 
-    }
+      function openDrawer() {
+        console.log('[drawer-debug] openDrawer() called');
+        if (!drawer || !overlay) { console.log('[drawer-debug] ABORT: missing elements'); return; }
+        drawer.classList.add('open');
+        overlay.classList.add('open');
+        logDrawerState('AFTER open');
+      }
 
-    this.nextElementSibling.classList.toggle('active');
-    this.classList.toggle('active');
+      function closeDrawer() {
+        console.log('[drawer-debug] closeDrawer() called');
+        if (!drawer || !overlay) return;
+        drawer.classList.remove('open');
+        overlay.classList.remove('open');
+        logDrawerState('AFTER close');
+      }
 
-  });
+      if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', function (e) {
+          console.log('[drawer-debug] hamburger CLICKED');
+          openDrawer();
+        });
+      } else {
+        console.log('[drawer-debug] ERROR: #hamburgerBtn not found');
+      }
 
-}
-</script>
+      if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', closeDrawer);
+      if (overlay) overlay.addEventListener('click', closeDrawer);
+
+      window.addEventListener('load', function () {
+        logDrawerState('ON PAGE LOAD');
+      });
+    })();
+  </script>
 </body>
-
 </html>

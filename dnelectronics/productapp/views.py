@@ -223,20 +223,19 @@ def order_view(request, product_id):
         'product': product
     }
     return render(request, 'productapp/order.html', context)
+
+
 def cart_checkout_view(request):
-    # Get cart items for the user
     if request.user.is_authenticated:
         cart_items = Cart.objects.filter(user=request.user)
     else:
-        # Handle anonymous users if you have session-based cart
         cart_items = []
-        
+
     if not cart_items.exists():
         messages.error(request, 'Your cart is empty!')
-        return redirect('cart_view')  # or wherever your cart page is
-        
+        return redirect('cart_view')
+
     if request.method == 'POST':
-        # Get form data
         full_name = request.POST.get('fullName')
         phone = request.POST.get('phone')
         address = request.POST.get('address')
@@ -245,35 +244,33 @@ def cart_checkout_view(request):
         pincode = request.POST.get('pincode')
         delivery_time = request.POST.get('deliveryTime')
         payment_method = request.POST.get('paymentMethod')
-        
-        # Get transaction proof data
+
         transaction_id = request.POST.get('transaction_id', '').strip()
         transaction_proof = request.FILES.get('transaction_proof')
-        
-        # Validate transaction proof - at least one should be provided
-        if not transaction_id and not transaction_proof:
-            messages.error(request, 'Please provide either transaction ID or upload payment screenshot.')
+
+        # Basic required-field check
+        required = [full_name, phone, address, city, state, pincode, delivery_time, payment_method]
+        if not all(required):
+            messages.error(request, 'Please fill in all required fields.')
             return render(request, 'productapp/cart_order.html', get_cart_context(cart_items))
-        
-        # Calculate total amount for all cart items
+
+        # Proof is only required for UPI — Cash on Delivery skips this entirely
+        if payment_method == 'upi' and not transaction_id and not transaction_proof:
+            messages.error(request, 'Please provide either a transaction ID or upload a payment screenshot for UPI payment.')
+            return render(request, 'productapp/cart_order.html', get_cart_context(cart_items))
+
         from decimal import Decimal
-        delivery_charges = Decimal('5.00')
-        tax = Decimal('2.50')
-        cod_charge = Decimal('2.00') if payment_method == 'cod' else Decimal('0.00')
-        
+        cod_charge = Decimal('50.00') if payment_method == 'cod' else Decimal('0.00')
+
         subtotal = sum(item.product.final_price * item.quantity for item in cart_items)
-        total_amount = subtotal + delivery_charges + tax + cod_charge
-        
-        # Create orders for each cart item
+        total_amount = subtotal + cod_charge
+
         orders_created = []
         for item in cart_items:
-            # Calculate proportional charges for each item
             item_total = item.product.final_price * item.quantity
-            item_delivery = delivery_charges * (item_total / subtotal)
-            item_tax = tax * (item_total / subtotal)
-            item_cod = cod_charge * (item_total / subtotal)
-            item_final_total = item_total + item_delivery + item_tax + item_cod
-            
+            item_cod = cod_charge * (item_total / subtotal) if subtotal else Decimal('0.00')
+            item_final_total = item_total + item_cod
+
             order = Order.objects.create(
                 user=request.user if request.user.is_authenticated else None,
                 product=item.product,
@@ -291,18 +288,14 @@ def cart_checkout_view(request):
                 transaction_proof=transaction_proof if transaction_proof else None
             )
             orders_created.append(order)
-        
-        # Clear cart after successful order
+
         cart_items.delete()
-        
-        messages.success(request, 'Orders placed successfully!')
-        return redirect('order_success', order_id=orders_created[0].id)  # or create a cart success page
-    
-    # GET request - show checkout form
+
+        messages.success(request, 'Order placed successfully!')
+        return redirect('order_success', order_id=orders_created[0].id)
+
     context = get_cart_context(cart_items)
     return render(request, 'productapp/cart_order.html', context)
-
-
 def get_cart_context(cart_items):
     """Helper function to get cart context data"""
     from decimal import Decimal
